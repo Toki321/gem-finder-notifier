@@ -24,17 +24,20 @@ def main(account):
     account.sendTelegramMessage(checkedNewFollows)
 
 
-def run_scheduler(account):
+def run_scheduler():
     s = sched.scheduler(time.time, time.sleep)
 
     def run_main():
-        toTrackAccounts = createToTrackList()
-        main(account)
-        s.enter(900, 1, run_main)  # 900 seconds = 15 minutes
+        try:
+            toTrackAccounts = createToTrackList()
+            for account in toTrackAccounts:
+                main(account)
+                s.enter(900, 1, run_main)  # 900 seconds = 15 minutes
+        except:
+            print("error for ", account)
 
     s.enter(0, 1, run_main)
     s.run()
 
 
-# call the scheduler function with your Twitter account ID
-run_scheduler("1449328468227932163")
+run_scheduler()

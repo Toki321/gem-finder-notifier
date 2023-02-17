@@ -24,9 +24,10 @@ class TrackedTwitterAccount:
         index = 0
         nameList = []
         followingList = self.getListFollowingIds()
-        for x in followingList.data:
-            nameList.append(str(followingList.data[index]))
-            index += 1
+        if followingList.data != None:
+            for x in followingList.data:
+                nameList.append(str(followingList.data[index]))
+                index += 1
 
         return nameList
 
@@ -37,6 +38,7 @@ class TrackedTwitterAccount:
         with open(fileName, "w") as f:
             for id in followingListIds:
                 f.write(id + "\n")
+        f.close()
 
     # Function to read a file and extract ids to a list
     def extractIdsFromFile(self):
@@ -44,7 +46,7 @@ class TrackedTwitterAccount:
 
         with open(fileName, "r") as f:
             lines = f.readlines()
-
+        f.close()
         lines = [line.strip() for line in lines]
 
         numbers = [line for line in lines]
@@ -77,3 +79,4 @@ class TrackedTwitterAccount:
             requests.get(url).json()
 
     # Function for getting number of $TIKS mentioned for 2 dates input (timeframe)
+    

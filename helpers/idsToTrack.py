@@ -1,16 +1,20 @@
-import itertools
 import os.path
 from TwitterAccount import TrackedTwitterAccount
 
 
-# Read first 15 ids
 def readIds():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, "../idsToTrack.txt")
 
     with open(file_path, "r") as f:
         lines = f.readlines()
-        toTrackIdList = [line.split()[-1] for line in itertools.islice(lines, 15)]
+        toTrackIdList = []
+        i = 0
+        for line in lines:
+            toTrackIdList.append(line.split()[-1])
+            i += 1
+            if i == 14:
+                break
         return toTrackIdList
 
 

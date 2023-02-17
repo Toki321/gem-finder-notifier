@@ -9,5 +9,5 @@ for id in idsToTrack:
     account = TrackedTwitterAccount(id)
     accountsToTrack.append(account)
 
-    usernameList = account.getListUsername()
+    usernameList = account.getListUsernameFollows()
     account.writeToFile(usernameList)
