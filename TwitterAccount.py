@@ -1,4 +1,7 @@
+import requests
 from helpers.tweepyClient import getTweepyClient
+import os
+from ToFollowAccount import ToFollowAccount
 
 client = getTweepyClient()
 
@@ -6,20 +9,18 @@ client = getTweepyClient()
 class TrackedTwitterAccount:
     def __init__(self, id):
         self.id = id
+        self.userObject = client.get_user(id=id)
 
     # Function for getting following list here
     def getListFollowingIds(self):
         return client.get_users_following(self.id)
 
     # Function to return what is not in list1 but is in list2, input is list2 and list1 we read from file
-    def getNewFollows(self, oldFollowingList, newFollowingList):
-        nameListOld = self.getListUsername(oldFollowingList)
-        nameListNew = self.getListUsername(newFollowingList)
-
+    def getNewFollows(self, nameListOld, nameListNew):
         return list(set(nameListNew) - set(nameListOld))
 
     # Function to get usernames of follows
-    def getListUsername(self):
+    def getListUsernameFollows(self):
         index = 0
         nameList = []
         followingList = self.getListFollowingIds()
@@ -49,13 +50,30 @@ class TrackedTwitterAccount:
         numbers = [line for line in lines]
         return numbers
 
+    def getCheckedNewFollows(newFollows):
+        checkedNewFollows = []
+        for username in newFollows:
+            toFollowAccount = ToFollowAccount(username)
+            if toFollowAccount.checkConditions() == True:
+                checkedNewFollows.append(toFollowAccount)
+
+        return checkedNewFollows
+
     # Function to send telegram message
+    def sendTelegramMessage(self, newFollows):
+        TOKEN = os.getenv("TELEGRAM_TOKEN")
+        CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+        usernameOfTrackedAccount = self.userObject.data["username"]
+        nameOfTrackedAccount = self.userObject.data["name"]
+        print("\n")
+        for account in newFollows:
+            print(f"to follow for {usernameOfTrackedAccount}:", account.username)
+            MESSAGE = (
+                f"https://twitter.com/{usernameOfTrackedAccount} ({nameOfTrackedAccount})"
+                + " has followed "
+                + f"https://twitter.com/{account.username} ({newFollows.fullName})"
+            )
+            url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={MESSAGE}"
+            requests.get(url).json()
 
     # Function for getting number of $TIKS mentioned for 2 dates input (timeframe)
-
-
-class FollowerAccount:
-    def __init__(self, id, name, username):
-        self.id = id
-        self.name = name
-        self.username = username
