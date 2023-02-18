@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
 from helpers.tweepyClient import getTweepyClient
 from helpers.substackCheck import isSubstackContainedInString
 from helpers.isUrlContained import isUrlContainedInString

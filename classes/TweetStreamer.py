@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
 import tweepy
 from tweepy import StreamingClient, StreamRule
 import os
@@ -13,8 +16,9 @@ client = getTweepyClient()
 
 class TweetPrinterV2(tweepy.StreamingClient):
     def on_tweet(self, tweet):
-        tweet = client.get_tweet(tweet.id)
-        print(tweet)
+        url = f"https://twitter.com/{tweet.author_id}/status/{tweet.id}"
+        print(url)
+        # print(tweet.url)
         # print(f"{tweet.id} {tweet.created_at} ({tweet.author_id}): {tweet.text}")
         # print("tweet Object: ", tweet)
         # print("-" * 50)
@@ -61,4 +65,4 @@ class TweetStreamer:
         self.cleanRules()
         rules = StreamRule(self.ruleString())
         self.tweetPrinter.add_rules(rules)
-        self.tweetPrinter.filter(expansions="author_id")
+        self.tweetPrinter.filter(expansions="author_id", media_fields="url")

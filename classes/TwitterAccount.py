@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
+
 import requests
 from helpers.tweepyClient import getTweepyClient
 import os
@@ -79,4 +83,3 @@ class TrackedTwitterAccount:
             requests.get(url).json()
 
     # Function for getting number of $TIKS mentioned for 2 dates input (timeframe)
-    
