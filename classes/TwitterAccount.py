@@ -5,7 +5,7 @@ sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
 import requests
 from helpers.tweepyClient import getTweepyClient
 import os
-from ToFollowAccount import ToFollowAccount
+from classes.ToFollowAccount import ToFollowAccount
 
 client = getTweepyClient()
 
