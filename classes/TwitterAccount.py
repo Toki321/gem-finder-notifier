@@ -12,7 +12,7 @@ client = getTweepyClient()
 
 class TrackedTwitterAccount:
     def __init__(self, id):
-        self.id = id
+        self.id = str(id)
         self.userObject = client.get_user(id=id)
 
     # Function for getting following list here
@@ -21,7 +21,9 @@ class TrackedTwitterAccount:
 
     # Function to return what is not in list1 but is in list2, input is list2 and list1 we read from file
     def getNewFollows(self, nameListOld, nameListNew):
-        return list(set(nameListNew) - set(nameListOld))
+        newFollows = list(set(nameListNew) - set(nameListOld))
+        print(newFollows)
+        return newFollows
 
     # Function to get usernames of follows
     def getListUsernameFollows(self):
@@ -56,7 +58,7 @@ class TrackedTwitterAccount:
         numbers = [line for line in lines]
         return numbers
 
-    def getCheckedNewFollows(newFollows):
+    def getCheckedNewFollows(self, newFollows):
         checkedNewFollows = []
         for username in newFollows:
             toFollowAccount = ToFollowAccount(username)
@@ -67,7 +69,7 @@ class TrackedTwitterAccount:
 
     # Function to send telegram message
     def sendTelegramMessage(self, newFollows):
-        TOKEN = os.getenv("TELEGRAM_TOKEN")
+        TOKEN = os.getenv("TELEGRAM_GHOUL_TOKEN")
         CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
         usernameOfTrackedAccount = self.userObject.data["username"]
         nameOfTrackedAccount = self.userObject.data["name"]
@@ -77,9 +79,7 @@ class TrackedTwitterAccount:
             MESSAGE = (
                 f"https://twitter.com/{usernameOfTrackedAccount} ({nameOfTrackedAccount})"
                 + " has followed "
-                + f"https://twitter.com/{account.username} ({newFollows.fullName})"
+                + f"https://twitter.com/{account.username} ({account.fullName})"
             )
             url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={MESSAGE}"
             requests.get(url).json()
-
-    # Function for getting number of $TIKS mentioned for 2 dates input (timeframe)

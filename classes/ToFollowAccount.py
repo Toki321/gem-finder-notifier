@@ -32,7 +32,7 @@ class ToFollowAccount:
         bio = self.userObject.data.description
 
         # Check if bio url is substack
-        if self.checkUrlBio():
+        if self.isBioUrlPresent():
             if isSubstackContainedInString(bio) == True:
                 return True
 
@@ -40,14 +40,20 @@ class ToFollowAccount:
 
         # Check if url in section is substack
         if entities != None:
-            url = entities["url"]["urls"][0]["expanded_url"]
-            if isSubstackContainedInString(url) == True:
-                return True
+            print(entities)
+            try:
+                url = entities["url"]["urls"][0]["expanded_url"]
+                print(url)
+                if isSubstackContainedInString(url) == True:
+                    return True
+            except KeyError:
+                if self.isBioUrlPresent() == False:
+                    return True
 
         return False
 
     # Check if links exist in bio
-    def checkUrlBio(self):
+    def isBioUrlPresent(self):
         bio = self.userObject.data.description
         if isUrlContainedInString(bio):
             return True
@@ -64,7 +70,7 @@ class ToFollowAccount:
 
     # Check if url anywhere exists
     def isUrlPresent(self):
-        if self.checkEntitiesUrl() == False or self.checkUrlBio() == False:
+        if self.checkEntitiesUrl() == False or self.isBioUrlPresent() == False:
             return True
         else:
             return False

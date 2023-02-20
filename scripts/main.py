@@ -1,43 +1,20 @@
-# from classes.TwitterAccount import TrackedTwitterAccount
-# from classes.ToFollowAccount import ToFollowAccount
-from helpers.idsToTrack import createToTrackList
-import sched, time
+import sys
+import multiprocessing
 
+sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
 
-def main(account):
-    # Read old data from txt
-    oldFollows = account.extractIdsFromFile()
+from notifyFollows import schedule
+from streamTweets import streamTweets
 
-    # Get latest follow list
-    latestFollows = account.getListUsernameFollows()
+if __name__ == "__main__":
+    # Create two processes, one for each script
+    p1 = multiprocessing.Process(target=schedule)
+    p2 = multiprocessing.Process(target=streamTweets)
 
-    # Write new data to txt
-    account.writeToFile(latestFollows)
+    # Start the processes
+    p1.start()
+    p2.start()
 
-    # Get follows that weren't in the old list
-    newFollows = account.getNewFollows(oldFollows, latestFollows)
-
-    # Remove follows that don't meet conditions
-    checkedNewFollows = account.getCheckedNewFollows(newFollows)
-
-    # Send telegram notification to group
-    account.sendTelegramMessage(checkedNewFollows)
-
-
-def run_scheduler():
-    s = sched.scheduler(time.time, time.sleep)
-
-    def run_main():
-        try:
-            toTrackAccounts = createToTrackList()
-            for account in toTrackAccounts:
-                main(account)
-                s.enter(900, 1, run_main)  # 900 seconds = 15 minutes
-        except:
-            print("error for ", account)
-
-    s.enter(0, 1, run_main)
-    s.run()
-
-
-run_scheduler()
+    # Wait for the processes to finish
+    p1.join()
+    p2.join()

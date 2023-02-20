@@ -12,12 +12,12 @@ from helpers.top100coins import get_top_100_cryptos
 load_dotenv()
 
 BEARER_TOKEN = os.getenv("BEARER_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_NARRATIVE_TRADERS_CHAT_ID")
-
-top_100_coins_dict = get_top_100_cryptos()
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 
 class TweetPrinterV2(tweepy.StreamingClient):
+    top_100_coins_dict = get_top_100_cryptos()
+
     def on_tweet(self, tweet):
         if self.isTick(tweet.text):
             url = f"https://twitter.com/{tweet.author_id}/status/{tweet.id}"
@@ -25,7 +25,6 @@ class TweetPrinterV2(tweepy.StreamingClient):
 
     def postUrlToTelegram(self, url):
         TOKEN = os.getenv("TELEGRAM_GHOUL_TOKEN")
-        CHAT_ID = "-710524915"
         # CHAT_ID = os.getenv("TELEGRAM_NARRATIVE_TRADERS_CHAT_ID")
         print("sending tweet to tg: ", url)
         MESSAGE = url
@@ -71,10 +70,8 @@ class TweetPrinterV2(tweepy.StreamingClient):
 
 
 class TweetStreamer:
-    def __init__(self, list1, list2, list3) -> None:
+    def __init__(self, list1) -> None:
         self.accountsToTrackOne = list1
-        self.accountsToTrackTwo = list2
-        self.accountsToTrackThree = list3
         self.tweetPrinter = TweetPrinterV2(BEARER_TOKEN)
 
     # clean rules
@@ -121,7 +118,7 @@ class TweetStreamer:
         self.cleanRules()
         rules = []
         rules.append(StreamRule(self.ruleString("one")))
-        rules.append(StreamRule(self.ruleString("two")))
+        # rules.append(StreamRule(self.ruleString("two")))
         # rules.append(StreamRule(self.ruleString("three")))
         self.tweetPrinter.add_rules(rules)
         self.tweetPrinter.filter(expansions="author_id", media_fields="url")

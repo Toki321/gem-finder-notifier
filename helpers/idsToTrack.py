@@ -8,13 +8,16 @@ from classes.TwitterAccount import TrackedTwitterAccount
 
 def readIds():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(script_dir, "../accountsForTracking.txt")
+    file_path = os.path.join(script_dir, "../accountsForTracking1.txt")
 
     with open(file_path, "r") as f:
         lines = f.readlines()
         toTrackIdList = []
         for line in lines:
-            toTrackIdList.append(line.split()[-1])
+            try:
+                toTrackIdList.append(line.split(" ")[1])
+            except IndexError:
+                print(line)
 
         return toTrackIdList
 

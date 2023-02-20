@@ -1,7 +1,13 @@
-from TwitterAccount import TrackedTwitterAccount
+import sys
+
+sys.path.append("D:\\Coding Projects\\gem-finder-notifier")
+
+
+from classes.TwitterAccount import TrackedTwitterAccount
 from helpers.idsToTrack import readIds
 
-idsToTrack = readIds()
+# idsToTrack = readIds()
+idsToTrack = ["2966287497"]
 
 accountsToTrack = []
 
