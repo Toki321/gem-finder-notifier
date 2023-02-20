@@ -28,7 +28,6 @@ def doLogicForOneAccount(account):  # account
 
     # Send telegram notification to group
     account.sendTelegramMessage(checkedNewFollows)
-    print("ness")
 
 
 def runForEveryAccount():
